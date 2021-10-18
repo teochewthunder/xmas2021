@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Christmas Puzzle</title>
+
+		<style>
+			div { outline: 0px solid #FF0000;}
+
+			#xmasApp
+			{
+				width: 500px;
+				margin: 0 auto 0 auto;
+				font-family: verdana;
+				font-size: 12px;
+			}
+
+			#labelContainer
+			{
+				width: 100%;
+				height: 150px;
+				text-align: center;
+			}
+
+			#labelContainer button
+			{
+				width: 8em;
+				height: 2em;
+				text-align: center;
+				background-color: rgba(255, 100, 0, 1);
+				color: rgba(255, 255, 255, 1);
+				font-weight: bold;
+				border-radius: 10px;
+				border: 0px solid black;
+			}
+
+			#labelContainer button:hover
+			{
+				background-color: rgba(255, 100, 0, 0.5);
+				color: rgba(255, 0, 0, 1);
+			}
+
+			#puzzleContainer
+			{
+				width: 100%;
+				height: 500px;
+				-webkit-transition: all 1s;
+				transition: all 1s;
+			}
+
+			.pieceContainer
+			{
+				width: 25%;
+				height: 25%;
+				float: left;
+				background-color: rgba(0, 0, 0, 1);
+			}
+
+			.piece
+			{
+				width: 100%;
+				height: 100%;
+				background-repeat: no-repeat;
+				margin: 0px;
+			}
+
+			.blank
+			{
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 1);
+			}
+
+			.clickable
+			{
+				cursor: pointer;
+			}
+
+			.clickable:hover
+			{
+				filter: brightness(150%);
+			}
+
+			.unclickable
+			{
+				cursor: default;
+			}
+
+			.win
+			{
+				outline: 5px solid rgba(255, 100, 0, 1);
+			}
+
+			.move_e
+			{
+				margin-left: 100%;
+				-webkit-transition: all 0.5s;
+				transition: all 0.5s;
+			}
+
+			.move_w
+			{
+				margin-left: -100%;
+				-webkit-transition: all 0.5s;
+				transition: all 0.5s;
+			}
+
+			.move_n
+			{
+				margin-top: -100%;
+				-webkit-transition: all 0.5s;
+				transition: all 0.5s;
+			}
+
+			.move_s
+			{
+				margin-top: 100%;
+				-webkit-transition: all 0.5s;
+				transition: all 0.5s;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="xmasApp">
+			<div id="labelContainer">
+				<h1>MERRY CHRISTMAS!</h1>
+
+				<p>
+					This picture has been scrambled. Click on the tiles to move them and unscramble the picture. Tip: The top right hand tile is always the blank tile.
+				</p>
+
+				<button v-on:click="reset">{{btnText}}</button>
+			</div>
+
+			<div id="puzzleContainer" v-bind:class="isComplete() ? 'win' : ''">
+				<div class="pieceContainer" v-for="holder in arrangement">
+					<div v-bind:class="getClass(holder.id)" v-bind:id="'piece'+holder.id" v-bind:style="getStyle(holder.piece)" v-on:click="moveTile(holder.id)">
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+		<script>
+			var app = new Vue
+			(
+				{
+					el: "#xmasApp",
+					data:
+					{
+						btnText: "RESET",
+						pieces: [],
+						arrangement: [],
+						blankIndex: 3,
+						images: 4,
+						imageNo: 0
+					},
+					methods:
+					{
+						reset: function()
+						{
+							this.btnText = "RESET";
+							this.pieces = [];
+							this.arrangement = [];
+							this.blankIndex = 3;
+							this.imageNo = Math.floor(Math.random() * this.images);
+							var tempArr = [];
+
+							for (var row = 0; row < 4; row++)
+							{
+								for (var col = 0; col < 4; col++)
+								{
+									var offsetX = col * 33;
+									var offsetY = row * 33;
+
+									var piece = 
+									{
+										id: (row * 4) + col,
+										offsetX: offsetX,
+										offsetY: offsetY,
+									}
+
+									this.pieces.push(piece);
+									tempArr.push((row * 4) + col);										
+
+									var holder = 
+									{
+										id: (row * 4) + col,
+										piece: ((row * 4) + col == this.blankIndex ? null : undefined)
+									}
+
+									this.arrangement.push(holder);
+								}
+							}
+
+							for (var i = 0; i < this.arrangement.length; i++)
+							{
+								if (i != this.blankIndex) 
+								{
+									if (tempArr.length == 1)
+									{
+										this.arrangement[i].piece = tempArr[0];
+									}
+									else 
+									{
+										do
+										{
+											var index = Math.floor(Math.random() * tempArr.length);
+											this.arrangement[i].piece = tempArr[index];
+											tempArr.splice(index, 1);											
+										}
+										while(this.arrangement[i].piece == this.blankIndex);	
+									}
+								}
+							}
+						},
+						getClass: function(id)
+						{
+							var baseClass = (id == this.blankIndex ? "blank" : "piece");
+							var clickable = (this.isClickable(id) == false ? "unclickable" : "clickable");
+
+							return baseClass + " " + clickable;
+						},
+						getStyle: function(id)
+						{
+							if (id == null) return "";
+
+							var obj = this.pieces[id];
+							var image = "background-image: url(xmas" + this.imageNo + ".jpg);";
+							var offset = "background-position:" + obj.offsetX + "% " + obj.offsetY + "%";
+
+							return image + offset;
+						},
+						isClickable: function(index)
+						{
+							if (index == null) return false;
+							if (this.isComplete()) return false;
+
+							if (index + 1 == this.blankIndex && [3, 7, 11].indexOf(index) == -1) return "e";
+							if (index - 1 == this.blankIndex && [4, 8, 12].indexOf(index) == -1) return "w"; 
+							if (index + 4 == this.blankIndex) return "s"; 
+							if (index - 4 == this.blankIndex) return "n";
+
+							return false;
+						},
+						isComplete: function()
+						{
+							for (var i = 0; i < this.arrangement.length; i++)
+							{
+								if (i != this.blankIndex) 
+								{
+									if (this.arrangement[i].piece != this.arrangement[i].id) return false;
+								}
+							}
+
+							this.btnText = "RESTART";
+
+							return true;
+						},
+						moveTile: function(index)
+						{
+							var dir = this.isClickable(index);
+							if (!dir) return;
+
+							var piece = document.getElementById("piece" + index);
+							var v = this;
+
+							if (dir == "e")
+							{
+								piece.className = "piece clickable move_" + dir;
+
+								setTimeout
+								(
+									function()
+									{
+										v.arrangement[index + 1].piece = v.arrangement[index].piece;
+										v.arrangement[index].piece = null;
+										v.blankIndex = index;
+										piece.className = "piece";
+									},
+									500
+								)
+
+							}
+
+							if (dir == "w")
+							{
+								piece.className = "piece clickable move_" + dir;
+
+								setTimeout
+								(
+									function()
+									{
+										v.arrangement[index - 1].piece = v.arrangement[index].piece;
+										v.arrangement[index].piece = null;
+										v.blankIndex = index;
+										piece.className = "piece";
+									},
+									500
+								)
+							}
+
+							if (dir == "s")
+							{
+								piece.className = "piece clickable move_" + dir;
+
+								setTimeout
+								(
+									function()
+									{
+										v.arrangement[index + 4].piece = v.arrangement[index].piece;
+										v.arrangement[index].piece = null;
+										v.blankIndex = index;
+										piece.className = "piece";
+									},
+									500
+								)
+							}
+
+							if (dir == "n")
+							{
+								piece.className = "piece clickable move_" + dir;
+
+								setTimeout
+								(
+									function()
+									{
+										v.arrangement[index - 4].piece = v.arrangement[index].piece;
+										v.arrangement[index].piece = null;
+										v.blankIndex = index;
+										piece.className = "piece";
+									},
+									500
+								)
+							}
+						}
+					},
+					created: function()
+					{
+						this.reset();
+					}
+				}
+			);
+		</script>
+	</body>
+</html>
