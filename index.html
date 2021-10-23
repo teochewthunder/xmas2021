@@ -93,29 +93,29 @@
 			.move_e
 			{
 				margin-left: 100%;
-				-webkit-transition: all 0.5s;
-				transition: all 0.5s;
+				-webkit-transition: all 0.3s;
+				transition: all 0.3s;
 			}
 
 			.move_w
 			{
 				margin-left: -100%;
-				-webkit-transition: all 0.5s;
-				transition: all 0.5s;
+				-webkit-transition: all 0.3s;
+				transition: all 0.3s;
 			}
 
 			.move_n
 			{
 				margin-top: -100%;
-				-webkit-transition: all 0.5s;
-				transition: all 0.5s;
+				-webkit-transition: all 0.3s;
+				transition: all 0.3s;
 			}
 
 			.move_s
 			{
 				margin-top: 100%;
-				-webkit-transition: all 0.5s;
-				transition: all 0.5s;
+				-webkit-transition: all 0.3s;
+				transition: all 0.3s;
 			}
 		</style>
 	</head>
@@ -154,7 +154,7 @@
 						pieces: [],
 						arrangement: [],
 						blankIndex: 3,
-						images: 4,
+						images: 5,
 						imageNo: 0
 					},
 					methods:
@@ -280,7 +280,7 @@
 										v.blankIndex = index;
 										piece.className = "piece";
 									},
-									500
+									300
 								)
 
 							}
@@ -298,7 +298,7 @@
 										v.blankIndex = index;
 										piece.className = "piece";
 									},
-									500
+									300
 								)
 							}
 
@@ -315,7 +315,7 @@
 										v.blankIndex = index;
 										piece.className = "piece";
 									},
-									500
+									300
 								)
 							}
 
@@ -332,7 +332,7 @@
 										v.blankIndex = index;
 										piece.className = "piece";
 									},
-									500
+									300
 								)
 							}
 						}
