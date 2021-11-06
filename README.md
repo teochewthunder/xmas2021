@@ -1,5 +1,5 @@
 # Xmas 2021
-This is a tile-sliding gme written in VueJS. The objective of the game is to rearrange the square tiles to assemble the correct picture.
+This is a tile-sliding game written in VueJS. The objective of the game is to rearrange the square tiles to assemble the correct picture.
 
 ## HTML
 For this, we need the following elements.
