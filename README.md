@@ -23,4 +23,27 @@ Data and configuration are in the `data` object.
 - `images` is the total number of images used in this app.
 - `imageNo` is an integer used to determine which image is currently being used.
 
-Methods are in the *methods* property.
+Methods are in the `methods` property.
+- `reset()` 
+  - resets all data to their default values.
+  - selects a random image to be used.
+  - randomly scrambles he grid.
+- `isComplete()`
+  - checks if all the pieces in `arrangement` are in the correct order.
+  - returns `true` if so, `false` otherwise. 
+- `isClickable()`
+  - checks if the square in question is right next to the tile indicated by `blankIndex`.
+  - returns `false` by default.
+  - if the tile is next to the blank tile, this means that is is possible to switch the position of the current tile with the blank tile. The direction to move would be "n", "s", "e" or "w". This value will be accordingly returned.
+- `getStyle()`
+  - uses `imageNo` t get the current image.
+  - uses the id of the current tile to determine the offset.
+  - returns a CSS string that provides both the image and the offset.
+- `getClass`
+  - uses `isClickable()` to determine cursor appearance.
+  - uses the id of the current tile to determine if it is blank.
+  - returns a combination of CSS classes.
+- `moveTile()`
+  - uses `isClickable()` to determine wat directon the tile should move in.
+  - using a callback in the `setTimeout()` function, it adjusts the `margin` property of the current piece.
+  - the `arrangement` array is updated at the end of the transformation.
