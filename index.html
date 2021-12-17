@@ -134,7 +134,7 @@
 
 			<div id="puzzleContainer" v-bind:class="isComplete() ? 'win' : ''">
 				<div class="pieceContainer" v-for="holder in arrangement">
-					<div v-bind:class="getClass(holder.id)" v-bind:id="'piece'+holder.id" v-bind:style="getStyle(holder.piece)" v-on:click="moveTile(holder.id)">
+					<div v-bind:class="getClass(holder.id)"  v-bind:id="'piece'+holder.id" v-bind:style="getStyle(holder.piece)" v-on:click="moveTile(holder.id)">
 
 					</div>
 				</div>
@@ -199,6 +199,7 @@
 							{
 								if (i != this.blankIndex) 
 								{
+									//this.arrangement[i].piece = i;
 									if (tempArr.length == 1)
 									{
 										this.arrangement[i].piece = tempArr[0];
@@ -282,7 +283,6 @@
 									},
 									300
 								);
-
 							}
 
 							if (dir == "w")
@@ -340,7 +340,7 @@
 					created: function()
 					{
 						this.reset();
-					}
+					}					
 				}
 			);
 		</script>
